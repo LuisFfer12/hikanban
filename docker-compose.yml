@@ -1,0 +1,46 @@
+version: '3.3'
+services:
+  mysql:
+    image: mysql:5.6.39
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=hikanban
+      - MYSQL_USER=hikanban
+      - MYSQL_PASSWORD=hikanban
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+  flyway:
+    image: maven:3.5.2-jdk-8
+    working_dir: /usr/src/mymaven
+    volumes:
+      - ./:/usr/src/mymaven
+      - ~/.m2:/root/.m2
+    command:
+      - mvn 
+      - flyway:migrate
+      - -Dflyway.url=jdbc:mysql://mysql:3306/hikanban
+      - -Dflyway.user=hikanban
+      - -Dflyway.password=hikanban
+    links:
+      - mysql
+  hikanban:
+    networks:
+      - default
+    image: maven:3.5.2-jdk-8
+    working_dir: /usr/src/mymaven
+    volumes:
+      - ./:/usr/src/mymaven
+      - ~/.m2:/root/.m2
+    command: bash -c 'mvn install spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -DskipTests"'
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    expose:
+      - "8080"
+      - "5005"
+    ports:
+      - "8080:8080"
+      - "5009:5005"

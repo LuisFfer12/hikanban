@@ -1,0 +1,37 @@
+server:
+  port: 8080
+  servlet: 
+    context-path: /hikanban
+    session:
+      cookie:
+        secure: true
+        http-only: true
+
+spring:  
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    url: jdbc:mysql://mysql:3306/hikanban
+    username: hikanban
+    password: hikanban
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: dev
+                
+hikanban:
+  listMaxSize: 100
+  security:
+    encryptionSalt: TopSecret
+
+mail:
+  from: teste@teste.com
+  host: smtp.gmail.com
+  port: 587
+  user: hieventssolutions@gmail.com
+  password: euamocastanhadecaju
+
+
+
